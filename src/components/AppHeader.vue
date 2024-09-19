@@ -1,50 +1,160 @@
 <script>
+import axios from "axios";
+import { store } from "../store";
 export default {
-  
+  data() {
+    return {
+      store,
+    };
+  },
 };
 </script>
 
 <template>
-  <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Accordion Item #1
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+  <header>
+    <div class="container-fluid">
+      <div class="row align-items-center">
+        <!-- Logo e Navbar -->
+        <div class="col-md-6 d-inline-flex align-items-center">
+          <div class="logo p-2">
+            <img
+              src="../../public/storia-di-netflix-1024x576.jpg.webp"
+              alt="Logo"
+            />
+          </div>
+          <nav>
+            <ul class="d-flex list-unstyled mb-0">
+              <li class="px-2"><a href="#">Home</a></li>
+              <li class="px-2"><a href="#">Movie</a></li>
+              <li class="px-2"><a href="#">Series</a></li>
+              <li class="px-2"><a href="#">Most Popular</a></li>
+              <li class="px-2"><a href="#">My Netflix</a></li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Icone a destra -->
+        <div class="col-md-6 d-flex justify-content-end">
+          <nav>
+            <ul class="d-flex list-unstyled mb-0">
+              <li class="px-2">
+                <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+              </li>
+              <li class="px-2">
+                <a href="#"><i class="fa-solid fa-user"></i></a>
+              </li>
+              <li class="px-2">
+                <a href="#"><i class="fa-solid fa-bell"></i></a>
+              </li>
+              <li class="px-2">
+                <a href="#"><i class="fa-solid fa-gear"></i></a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Campo di ricerca -->
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <input
+            type="text"
+            v-model="store.searchText"
+            class="form-control"
+            placeholder="Titolo del film"
+          />
+          <button @click="$emit('searchMovie')" class="btn btn-primary mt-2">
+            Invia
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Accordion Item #2
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Accordion Item #3
-      </button>
-    </h2>
-    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
-    </div>
-  </div>
-</div>
+  </header>
 </template>
+
 
 <style lang='scss' scoped>
 @import "bootstrap/scss/bootstrap";
+
+/* Header styles */
+header {
+  background-color: #000; /* Sfondo nero */
+  padding: 15px 0;
+}
+
+/* Stili per il logo */
+.logo img {
+  max-width: 100px;
+}
+
+/* Stili per i link della navbar */
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-size: 16px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  position: relative;
+  padding-bottom: 5px;
+}
+
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: red;
+  transition: width 0.3s ease-in-out;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* Stili per le icone */
+nav ul li a i {
+  color: #fff;
+  font-size: 20px;
+}
+nav ul li a:hover {
+  color: red;
+  font-size: 20px;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+/* Stile aggiuntivo per il bottone di ricerca */
+.btn-primary {
+  background-color: red;
+  border: none;
+}
+
+div nav ul li a i:hover {
+  color: red;
+}
+.form-control {
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  padding: 5px;
+  outline: none;
+  transition: border-bottom-color 0.3s ease-in-out,
+    background-color 0.3s ease-in-out;
+}
+
+.form-control:focus {
+  background-color: #ccc;
+  color: #000;
+  border-bottom-color: red;
+}
 </style>
+
+

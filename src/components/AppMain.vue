@@ -1,50 +1,122 @@
 <script>
+import axios from "axios";
+import SingleMovie from "./SingleMovie.vue";
+import { store } from "../store";
 export default {
-  
+  data() {
+    return {
+      searchText: "",
+      apiKey: "7142d541a997e6c5a2224e574d25f0ba",
+      store,
+    };
+  },
+  props: {
+    movies: Array,
+    series: Array,
+  },
+  components: {
+    SingleMovie,
+  },
+  methods: {
+    searchMovie() {
+      console.log("cerca il film");
+
+      axios
+        .get("https://api.themoviedb.org/3/search/movie", {
+          params: {
+            api_key: this.apiKey,
+            query: this.searchText,
+          },
+        })
+        .then((resp) => {
+          console.log(resp.data.results);
+          this.movies = resp.data.results;
+        })
+        .catch((error) => {
+          console.error("Errore nella richiesta API:", error); // Gestione degli errori
+        });
+      axios
+        .get("https://api.themoviedb.org/3/search/tv", {
+          params: {
+            api_key: this.apiKey,
+            query: this.searchText,
+          },
+        })
+        .then((resp) => {
+          console.log(resp.data.results);
+          this.series = resp.data.results;
+        })
+        .catch((error) => {
+          console.error("Errore nella richiesta API:", error); // Gestione degli errori
+        });
+    },
+    flagPusher(lang) {
+      const validLang = ["it", "en", "ja"];
+      if (validLang.includes(lang)) {
+        if (lang === "it") {
+          return "../it-flag.gif";
+        } else if (lang === "en") {
+          return "../us-flag.gif";
+        } else if (lang === "ja") {
+          return "../ja-flag.gif";
+        }
+      }
+      return "../CalicoJack-3.jpg";
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-        Accordion Item #1
-      </button>
-    </h2>
-    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+  <main>
+    <h2>Movies</h2>
+    <div class="movies">
+      <div class="row g-3 info">
+        <div
+          v-for="(movie, index) in store.movies"
+          :key="index"
+          class="size col-12 col-sm-6 col-md-4 col-lg-3 mt-3 mb-5"
+        >
+          <SingleMovie
+            :title="movie.title"
+            :originalTitle="movie.original_title"
+            :language="movie.original_language"
+            :rating="movie.vote_average"
+            :plot="movie.overview"
+            :posterPath="movie.poster_path"
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-        Accordion Item #2
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+    <h2>Tv Series</h2>
+    <div class="series">
+      <div class="row g-3">
+        <div
+          v-for="(serie, index) in store.series"
+          :key="index"
+          class="col-12 col-sm-6 col-md-4 col-lg-3 mt-3"
+        >
+          <SingleMovie
+            :title="serie.name"
+            :originalTitle="serie.original_title"
+            :language="serie.original_language"
+            :rating="serie.vote_average"
+            :plot="serie.overview"
+            :posterPath="serie.poster_path"
+          />
+        </div>
       </div>
     </div>
-  </div>
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-        Accordion Item #3
-      </button>
-    </h2>
-    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-      </div>
-    </div>
-  </div>
-</div>
+  </main>
 </template>
 
 <style lang='scss' scoped>
 @import "bootstrap/scss/bootstrap";
+main {
+  background-color: black;
+}
+h2 {
+  color: white;
+  font-weight: bold;
+}
 </style>
